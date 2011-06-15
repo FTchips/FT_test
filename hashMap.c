@@ -87,6 +87,7 @@ void insertMap (struct hashMap * ht, KeyType k, ValueType v)
             ht->table[index]->next = NULL;
 
         }
+        ht->count++;
     }
 }
 
@@ -109,28 +110,44 @@ int containsKey (struct hashMap * ht, KeyType k)
 
 void removeKey (struct hashMap * ht, KeyType k)
 {
-
+    struct hashLink* curr, prev;
+    if(containsKey(k))
+    {
+        curr = ht->table[stringHash2(k) % ht->tableSize];
+        while(curr->key != k)
+        {
+            prev = curr;
+            curr = curr->next;
+        }
+        prev->next = curr->next;
+        free(curr);
+        ht->count --;
+    }
 }
 
 int sizeMap (struct hashMap *ht)
-{  /*write this*/
-
-
+{
+    return ht->count;
 }
 
 int capacityMap(struct hashMap *ht)
-{  /*write this*/
-
-
+{
+    return ht->tableSize;
 }
 
 int emptyBuckets(struct hashMap *ht)
-{  /*write this*/
+{
+    int count, i;
 
+    for(i = 0, i < ht->tableSize, i++)
+    {
+        if(ht->table[i] == 0)
+            count++;
+    }
+    return count;
 }
 
 float tableLoad(struct hashMap *ht)
-{  /*write this*/
-
-
+{
+    return (float)sizeMap(ht)/(float)capacityMap(ht);
 }
